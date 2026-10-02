@@ -37,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.narisafe.app.services.LocationService
 import java.net.URLEncoder
 import kotlinx.coroutines.delay
+import android.content.ActivityNotFoundException
 
 @Composable
 fun SOSScreen(
@@ -453,16 +454,18 @@ fun SOSScreen(
     // SHARE SOS ON WHATSAPP
     // ---------------------------------------------------------
 
+// ---------------------------------------------------------
+// SHARE SOS ON WHATSAPP
+// ---------------------------------------------------------
+
     fun shareSOSOnWhatsApp(
         latitude: Double,
         longitude: Double
     ) {
 
-        val userId =
-            auth.currentUser?.uid
+        val userId = auth.currentUser?.uid
 
         if (userId == null) {
-
             Toast.makeText(
                 context,
                 "⚠️ User is not logged in",
@@ -473,19 +476,12 @@ fun SOSScreen(
         }
 
         db.collection("emergencyContacts")
-            .whereEqualTo(
-                "userId",
-                userId
-            )
-            .whereEqualTo(
-                "isPrimary",
-                true
-            )
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("isPrimary", true)
             .get()
             .addOnSuccessListener { result ->
 
                 if (result.isEmpty) {
-
                     Toast.makeText(
                         context,
                         "⚠️ No Primary Emergency Contact found",
@@ -495,12 +491,10 @@ fun SOSScreen(
                     return@addOnSuccessListener
                 }
 
-                val phone =
-                    result.documents[0]
-                        .getString("phone")
+                val phone = result.documents[0]
+                    .getString("phone")
 
                 if (phone.isNullOrBlank()) {
-
                     Toast.makeText(
                         context,
                         "⚠️ Primary contact has no phone number",
@@ -510,20 +504,23 @@ fun SOSScreen(
                     return@addOnSuccessListener
                 }
 
-                val cleanPhone =
-                    phone
-                        .replace("+", "")
-                        .replace(" ", "")
-                        .replace("-", "")
-                        .replace("(", "")
-                        .replace(")", "")
+                val cleanPhone = phone
+                    .replace("+", "")
+                    .replace(" ", "")
+                    .replace("-", "")
+                    .replace("(", "")
+                    .replace(")", "")
 
+                // Google Maps location link
+                val mapsUrl =
+                    "https://www.google.com/maps?q=$latitude,$longitude"
+
+                // WhatsApp message
                 val message =
-
                     "🚨 NariSafe Emergency Alert!\n\n" +
                             "I need help. My SOS is currently active.\n\n" +
-                            "📍 My SOS location:\n" +
-                            "https://maps.google.com/?q=$latitude,$longitude"
+                            "📍 My current location:\n" +
+                            mapsUrl
 
                 val encodedMessage =
                     URLEncoder.encode(
@@ -531,6 +528,7 @@ fun SOSScreen(
                         "UTF-8"
                     )
 
+                // WhatsApp direct chat URL
                 val whatsappUri =
                     Uri.parse(
                         "https://wa.me/$cleanPhone?text=$encodedMessage"
@@ -538,23 +536,32 @@ fun SOSScreen(
 
                 try {
 
-                    val whatsappIntent =
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            whatsappUri
-                        )
-
-                    context.startActivity(
-                        whatsappIntent
+                    val whatsappUri = Uri.parse(
+                        "whatsapp://send?phone=$cleanPhone&text=$encodedMessage"
                     )
 
-                } catch (
-                    exception: Exception
-                ) {
+                    val whatsappIntent = Intent(
+                        Intent.ACTION_VIEW,
+                        whatsappUri
+                    ).apply {
+                        setPackage("com.whatsapp")
+                    }
+
+                    context.startActivity(whatsappIntent)
+
+                } catch (exception: ActivityNotFoundException) {
 
                     Toast.makeText(
                         context,
-                        "❌ WhatsApp is not installed",
+                        "⚠️ WhatsApp is not installed on this device",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                } catch (exception: Exception) {
+
+                    Toast.makeText(
+                        context,
+                        "❌ Unable to open WhatsApp: ${exception.message}",
                         Toast.LENGTH_LONG
                     ).show()
                 }

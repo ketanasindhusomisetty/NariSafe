@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.narisafe.app.ui.safety.SafetyScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -215,17 +216,24 @@ class MainActivity : ComponentActivity() {
                                         "sos"
                                 },
 
-                                onLocationClick = {
-
-                                    if (activeSosId != null) {
-
-                                        viewingSosId = null
-
-                                        currentScreen =
-                                            "location"
-                                    }
+                                onSafetyClick = {
+                                    currentScreen = "safety"
                                 }
                             )
+                        }
+
+
+
+                        // =============================================
+                       // SAFETY
+                        // =============================================
+
+                                "safety" -> {
+                                    SafetyScreen(
+                                        onBack = {
+                                            currentScreen = "home"
+                                        }
+                                    )
                         }
 
                         // =============================================

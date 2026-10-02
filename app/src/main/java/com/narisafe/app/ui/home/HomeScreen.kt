@@ -21,8 +21,8 @@ fun HomeScreen(
     onLogout: () -> Unit,
     onContactsClick: () -> Unit,
     onSOSClick: () -> Unit,
-    onLocationClick: () -> Unit,
-    onEmergencyContactViewClick: () -> Unit
+    onEmergencyContactViewClick: () -> Unit,
+    onSafetyClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -80,72 +80,28 @@ fun HomeScreen(
             modifier = Modifier.height(20.dp)
         )
 
-        // CONTACTS + LOCATION
-        Row(
+// CONTACTS
+        Button(
+            onClick = onContactsClick,
             modifier = Modifier.fillMaxWidth()
         ) {
-
-            Button(
-                onClick = onContactsClick,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 6.dp)
-            ) {
-
-                Text(
-                    text = "👥 Contacts"
-                )
-            }
-
-            Button(
-                onClick = onLocationClick,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 6.dp)
-            ) {
-
-                Text(
-                    text = "📍 Location"
-                )
-            }
+            Text(
+                text = "👥 Contacts"
+            )
         }
 
         Spacer(
             modifier = Modifier.height(12.dp)
         )
 
-        // SAFETY + ROUTE
-        Row(
+// SAFETY
+        Button(
+            onClick = onSafetyClick,
             modifier = Modifier.fillMaxWidth()
         ) {
-
-            Button(
-                onClick = {
-                    // Safety Status will be implemented later
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 6.dp)
-            ) {
-
-                Text(
-                    text = "🛡️ Safety"
-                )
-            }
-
-            Button(
-                onClick = {
-                    // Safe Route will be implemented later
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 6.dp)
-            ) {
-
-                Text(
-                    text = "🗺️ Route"
-                )
-            }
+            Text(
+                text = "🛡️ Safety"
+            )
         }
 
         Spacer(
