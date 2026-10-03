@@ -9,6 +9,7 @@
     <queries>
         <package android:name="com.whatsapp" />
     </queries>
+    <uses-permission android:name="android.permission.INTERNET" />
 
 
 

@@ -259,7 +259,7 @@ fun EmergencyContactViewScreen(
                     ) {
 
                         Text(
-                            text = "📍 View Live Location"
+                            text = "📍 View SOS Location"
                         )
                     }
                 }
