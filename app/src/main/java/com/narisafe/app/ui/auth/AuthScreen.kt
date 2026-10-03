@@ -257,13 +257,25 @@ fun AuthScreen(
                 else {
 
                     // -------------------------------------------------
-                    // NAME VALIDATION
-                    // -------------------------------------------------
+// NAME VALIDATION
+// -------------------------------------------------
 
-                    if (name.isBlank()) {
+                    val normalizedName = name.trim()
+
+                    if (normalizedName.isBlank()) {
 
                         message =
                             "Please enter your name"
+
+                        return@Button
+                    }
+
+// Name must contain only letters and spaces
+
+                    if (!normalizedName.all { it.isLetter() || it.isWhitespace() }) {
+
+                        message =
+                            "Name must contain only letters and spaces"
 
                         return@Button
                     }
@@ -283,10 +295,12 @@ fun AuthScreen(
                         return@Button
                     }
 
-                    // Exactly 10 digits
-                    if (
-                        normalizedPhone.length != 10
-                    ) {
+// -------------------------------------------------
+// PHONE NUMBER VALIDATION
+// -------------------------------------------------
+
+// Must contain exactly 10 digits
+                    if (normalizedPhone.length != 10) {
 
                         message =
                             "Phone number must contain exactly 10 digits"
@@ -294,12 +308,8 @@ fun AuthScreen(
                         return@Button
                     }
 
-                    // Digits only
-                    if (
-                        !normalizedPhone.all {
-                            it.isDigit()
-                        }
-                    ) {
+// Must contain only digits
+                    if (!normalizedPhone.all { it.isDigit() }) {
 
                         message =
                             "Phone number must contain only digits"
@@ -307,6 +317,23 @@ fun AuthScreen(
                         return@Button
                     }
 
+// Indian mobile numbers should start with 6, 7, 8, or 9
+                    if (!normalizedPhone.matches(Regex("^[6-9][0-9]{9}$"))) {
+
+                        message =
+                            "Please enter a valid Indian mobile number"
+
+                        return@Button
+                    }
+
+// Reject numbers containing the same digit 10 times
+                    if (normalizedPhone.all { it == normalizedPhone[0] }) {
+
+                        message =
+                            "Please enter a valid mobile number"
+
+                        return@Button
+                    }
                     // -------------------------------------------------
                     // GMAIL VALIDATION
                     // -------------------------------------------------

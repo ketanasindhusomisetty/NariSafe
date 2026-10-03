@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.narisafe.app.ui.safety.SafetyScreen
+import androidx.activity.compose.BackHandler
 
 class MainActivity : ComponentActivity() {
 
@@ -71,6 +72,9 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf("home")
                 }
 
+                BackHandler(enabled = isLoggedIn && currentScreen != "home") {
+                    currentScreen = "home"
+                }
                 // -------------------------------------------------
                 // ACTIVE SOS ID
                 // -------------------------------------------------
